@@ -31,11 +31,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private CustomAdapter mAdapter;
-    private RecyclerView mRecyclerView;
-    private Button mSearchButton;
-    private EditText mSearchText;
     ProgressDialog mProgressDialog;
-    private static boolean isData = false;
 
     ActivityMainBinding binding;
 
@@ -43,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.customRecyclerView.setVisibility(View.GONE);
-        binding.textviewNodata.setVisibility(View.VISIBLE);
+        binding.setIsData(false);
         binding.btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,18 +62,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<List<YTItem>> call, Response<List<YTItem>> response) {
                         switch (response.code()) {
                             case 200:
-                                isData = true;
-                                binding.textviewNodata.setVisibility(View.INVISIBLE);
-                                binding.customRecyclerView.setVisibility(View.VISIBLE);
+                                binding.setIsData(true);
                                 mProgressDialog.dismiss();
                                 generateDataList(response.body());
                                 break;
                             case 404:
-                                isData = false;
+                                binding.setIsData(false);
                                 Toast.makeText(getApplicationContext(),"Couldn't find nothing on YT with these keywords!",Toast.LENGTH_SHORT).show();
                                 break;
                             default:
-                                isData = false;
+                                binding.setIsData(false);
                                 Toast.makeText(getApplicationContext(),"Server problem... Try again!",Toast.LENGTH_SHORT).show();
                         }
                     }
