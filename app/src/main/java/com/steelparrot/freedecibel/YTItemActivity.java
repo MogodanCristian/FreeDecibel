@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+import com.steelparrot.freedecibel.adapter.CustomAdapter;
 
 public class YTItemActivity extends AppCompatActivity {
 
@@ -73,6 +74,6 @@ public class YTItemActivity extends AppCompatActivity {
         mUploader.setText(uploader);
         mDuration.setText(duration);
         mTimeUpload.setText(time_upload);
-        mViews.setText(String.valueOf(views));
+        mViews.setText(CustomAdapter.updateViews((float)views));
     }
 }
