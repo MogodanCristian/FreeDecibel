@@ -71,7 +71,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
         holder.txtTitle.setText(currItem.getM_title());
         holder.txtUploader.setText(currItem.getM_uploader());
-        holder.txtViews.setText(currItem.getM_views().toString());
+        holder.txtViews.setText(updateViews(currItem.getM_views().floatValue()));
         holder.txtTimeUpload.setText(currItem.getM_time_upload());
         holder.txtDuration.setText(currItem.getM_duration());
     }
@@ -79,5 +79,30 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
     @Override
     public int getItemCount() {
         return itemsList.size();
+    }
+
+    public static String updateViews(Float views)
+    {
+        String ret=new String();
+        if(views>1000 & views <1000000)
+        {
+            views/=1000;
+            ret=String.format("%.02f",views)+"K";
+        }
+        else if(views>1000000 && views< 1000000000)
+        {
+            views/=1000000;
+            ret=String.format("%.02f",views)+"M";
+        }
+        else if(views> 1000000000)
+        {
+            views/=1000000000;
+            ret=String.format("%.02f",views)+"B";
+        }
+        else
+        {
+            ret=views.toString();
+        }
+        return ret;
     }
 }
