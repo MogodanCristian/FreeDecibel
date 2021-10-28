@@ -25,7 +25,7 @@ public class YTItemActivity extends AppCompatActivity {
     private TextView mTitle, mUploader, mDuration, mViews, mTimeUpload;
 
     private String url, title, duration, uploader, time_upload, thumbnail;
-    private int views;
+    private Long views;
 
     TabLayout tabLayout;
     ViewPager2 pager2;
@@ -87,7 +87,7 @@ public class YTItemActivity extends AppCompatActivity {
             uploader = intent.getStringExtra("uploader");
             time_upload = intent.getStringExtra("time_upload");
             thumbnail = intent.getStringExtra("thumbnail");
-            views = intent.getIntExtra("views", 1);
+            views = intent.getLongExtra("views", 1);
         } else {
             Toast.makeText(this, "No data sent", Toast.LENGTH_SHORT).show();
         }

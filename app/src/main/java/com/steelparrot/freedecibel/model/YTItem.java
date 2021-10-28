@@ -14,7 +14,7 @@ public class YTItem {
     private String m_duration;
 
     @SerializedName("views")
-    private Integer m_views;
+    private Long m_views;
 
     @SerializedName("uploader")
     private String m_uploader;
@@ -25,7 +25,7 @@ public class YTItem {
     @SerializedName("time_upload")
     private String m_time_upload;
 
-    public YTItem(String m_url, String m_thumbnail, String m_title, String m_duration, Integer m_views, String m_uploader, String m_time_upload) {
+    public YTItem(String m_url, String m_thumbnail, String m_title, String m_duration, Long m_views, String m_uploader, String m_time_upload) {
         this.m_thumbnail = m_thumbnail;
         this.m_title = m_title;
         this.m_duration = m_duration;
@@ -61,11 +61,11 @@ public class YTItem {
         this.m_duration = m_duration;
     }
 
-    public Integer getM_views() {
+    public Long getM_views() {
         return m_views;
     }
 
-    public void setM_views(Integer m_views) {
+    public void setM_views(Long m_views) {
         this.m_views = m_views;
     }
 
