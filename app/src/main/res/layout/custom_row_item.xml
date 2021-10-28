@@ -10,6 +10,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:orientation="vertical">
 
         <ImageView
@@ -53,35 +54,39 @@
                     android:id="@+id/uploader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAlignment="textStart"
                     android:layout_weight="1"
-                    android:textSize="17dp"
+                    android:textSize="14dp"
                     android:text="uploader"/>
+
+                <TextView
+                    android:id="@+id/duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="14dp"
+                    android:layout_weight="1"
+                    android:text="duration" />
 
                 <TextView
                     android:id="@+id/views"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAlignment="center"
                     android:layout_weight="1"
-                    android:textSize="17dp"
+                    android:textSize="14dp"
                     android:text="views"/>
 
                 <TextView
                     android:id="@+id/time_upload"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAlignment="center"
                     android:layout_weight="1"
-                    android:textSize="17dp"
+                    android:textSize="14dp"
                     android:text="time_upload"/>
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="17dp"
-                android:text="duration"
-                android:layout_marginTop="4dp"/>
 
         </LinearLayout>
 
