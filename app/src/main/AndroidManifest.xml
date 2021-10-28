@@ -13,6 +13,7 @@
         android:theme="@style/Theme.FreeDecibel">
         <activity
             android:name=".YTItemActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity android:name=".MainActivity">
             <intent-filter>

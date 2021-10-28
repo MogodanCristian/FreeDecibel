@@ -1,10 +1,12 @@
 package com.steelparrot.freedecibel.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import com.google.gson.annotations.SerializedName;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 import com.steelparrot.freedecibel.R;
+import com.steelparrot.freedecibel.YTItemActivity;
 import com.steelparrot.freedecibel.model.YTItem;
 
 import java.util.List;
@@ -34,6 +37,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
 
         private ImageView thumbnailImage;
         private TextView txtTitle, txtUploader, txtViews, txtTimeUpload, txtDuration;
+        private LinearLayout mainLayout;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -45,6 +49,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             txtViews = mView.findViewById(R.id.views);
             txtTimeUpload = mView.findViewById(R.id.time_upload);
             txtDuration = mView.findViewById(R.id.duration);
+            mainLayout = mView.findViewById(R.id.mainLayout);
         }
     }
 
@@ -74,6 +79,20 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
         holder.txtViews.setText(currItem.getM_views().toString());
         holder.txtTimeUpload.setText(currItem.getM_time_upload());
         holder.txtDuration.setText(currItem.getM_duration());
+        holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, YTItemActivity.class);
+                intent.putExtra("url", currItem.getM_url());
+                intent.putExtra("title", currItem.getM_title());
+                intent.putExtra("thumbnail", currItem.getM_thumbnail());
+                intent.putExtra("duration", currItem.getM_duration());
+                intent.putExtra("views", currItem.getM_views());
+                intent.putExtra("uploader", currItem.getM_uploader());
+                intent.putExtra("time_upload", currItem.getM_time_upload());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
