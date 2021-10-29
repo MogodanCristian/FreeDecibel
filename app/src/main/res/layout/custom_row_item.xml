@@ -39,13 +39,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@color/black"
+                android:background="@drawable/rounded_corner"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
                 android:text="duration"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@id/thumbnailImage"
-                app:layout_constraintRight_toRightOf="@id/thumbnailImage" />
+                app:layout_constraintRight_toRightOf="@id/thumbnailImage"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
