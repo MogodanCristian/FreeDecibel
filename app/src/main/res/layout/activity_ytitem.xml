@@ -19,23 +19,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/Image"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="251dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="25dp"
-            android:scaleType="fitXY" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/Image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="10dp"
+                android:scaleType="fitXY"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/Duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/rounded_corner"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:text="duration"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/Image"
+                app:layout_constraintRight_toRightOf="@id/Image"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/YTItemInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="25dp"
             android:orientation="vertical">
@@ -54,7 +76,10 @@
                 android:id="@+id/YTItemDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                >
 
                 <TextView
                     android:id="@+id/Uploader"
@@ -63,7 +88,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="Uploader"
-                    android:textSize="17dp" />
+                    android:textSize="17dp"
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/Views"
@@ -72,7 +98,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="Views"
-                    android:textSize="17dp" />
+                    android:textSize="17dp"
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/Time_upload"
@@ -81,15 +108,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="Time_Upload"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/Duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Duration"
-                    android:textSize="17dp" />
+                    android:textSize="17dp"
+                    android:gravity="center"/>
 
             </LinearLayout>
 
