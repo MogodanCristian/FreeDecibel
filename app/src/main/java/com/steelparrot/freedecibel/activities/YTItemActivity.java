@@ -7,6 +7,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,6 +20,9 @@ import com.squareup.picasso.Picasso;
 import com.steelparrot.freedecibel.R;
 import com.steelparrot.freedecibel.adapter.CustomAdapter;
 import com.steelparrot.freedecibel.adapter.FragmentAdapter;
+import com.yausername.ffmpeg.FFmpeg;
+import com.yausername.youtubedl_android.YoutubeDL;
+import com.yausername.youtubedl_android.YoutubeDLException;
 
 public class YTItemActivity extends AppCompatActivity {
 
@@ -32,10 +36,18 @@ public class YTItemActivity extends AppCompatActivity {
     ViewPager2 pager2;
     FragmentAdapter adapter;
 
+    private static final String TAG = "YTItem_ytdl_init";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ytitem);
+        try {
+            YoutubeDL.getInstance().init(getApplication());
+            FFmpeg.getInstance().init(getApplication());
+        } catch (YoutubeDLException e) {
+            Log.e(TAG, "failed to initialize youtubedl-android", e);
+        }
 
         mImageView = findViewById(R.id.Image);
         mTitle = findViewById(R.id.Title);
