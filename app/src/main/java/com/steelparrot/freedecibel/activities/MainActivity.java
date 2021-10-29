@@ -79,7 +79,15 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setIsData(false);
     }
-  
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(binding.getIsData()) {
+            binding.setIsData(true);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.nav_menu,menu);
