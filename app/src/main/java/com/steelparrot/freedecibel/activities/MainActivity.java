@@ -1,7 +1,6 @@
-package com.steelparrot.freedecibel;
+package com.steelparrot.freedecibel.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,12 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.steelparrot.freedecibel.R;
 import com.steelparrot.freedecibel.adapter.CustomAdapter;
 import com.steelparrot.freedecibel.databinding.ActivityMainBinding;
 import com.steelparrot.freedecibel.model.YTItem;

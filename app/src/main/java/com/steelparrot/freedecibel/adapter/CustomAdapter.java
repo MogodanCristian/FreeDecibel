@@ -12,11 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.annotations.SerializedName;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 import com.steelparrot.freedecibel.R;
-import com.steelparrot.freedecibel.YTItemActivity;
+import com.steelparrot.freedecibel.activities.YTItemActivity;
 import com.steelparrot.freedecibel.model.YTItem;
 
 import java.util.List;

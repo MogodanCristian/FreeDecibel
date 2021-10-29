@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FreeDecibel">
         <activity
-            android:name=".YTItemActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".activities.YTItemActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:exported="false" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

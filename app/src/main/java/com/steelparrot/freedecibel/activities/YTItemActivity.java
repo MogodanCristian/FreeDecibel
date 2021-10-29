@@ -1,4 +1,4 @@
-package com.steelparrot.freedecibel;
+package com.steelparrot.freedecibel.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+import com.steelparrot.freedecibel.R;
 import com.steelparrot.freedecibel.adapter.CustomAdapter;
 import com.steelparrot.freedecibel.adapter.FragmentAdapter;
 
