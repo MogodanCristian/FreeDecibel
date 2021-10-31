@@ -59,14 +59,17 @@ public class YTItemActivity extends AppCompatActivity {
         mViews = findViewById(R.id.Views);
         mTimeUpload = findViewById(R.id.Time_upload);
 
+
+        getData();
+        bindDataLayout();
+
         tabLayout = findViewById(R.id.tab_layout);
         pager2 = findViewById(R.id.view_pager);
 
-        FragmentManager fm = getSupportFragmentManager();
-        adapter = new FragmentAdapter(fm, getLifecycle());
+        adapter = new FragmentAdapter(this, url);
         pager2.setAdapter(adapter);
 
-        tabLayout.addTab(tabLayout.newTab().setText("MP3"));
+        tabLayout.addTab(tabLayout.newTab().setText("MP3/M4A"));
         tabLayout.addTab(tabLayout.newTab().setText("MP4"));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -89,8 +92,6 @@ public class YTItemActivity extends AppCompatActivity {
             }
         });
 
-        getData();
-        bindDataLayout();
     }
 
     private void getData() {

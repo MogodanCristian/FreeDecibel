@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 searchView.setMaxWidth(android.R.attr.width);
-                setItemsVisibility(menu,searchItem,false);
             }
         });
 
