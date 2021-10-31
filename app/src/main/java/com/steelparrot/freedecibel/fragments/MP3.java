@@ -150,11 +150,11 @@ public class MP3 extends Fragment {
         File youtubeDlDir = getDownloadLocation();
         request.addOption("--no-mtime");
         request.addOption("-o", youtubeDlDir.getAbsolutePath() + "/%(title)s.%(ext)s");
-//        request.addOption("-f", 140); // STILL THE BEST OPTION TO GO
+//        request.addOption("-f", 140); // STILL THE BEST OPTION TO GO M4A
         request.addOption("-f", "bestaudio");
         request.addOption("--extract-audio");
         request.addOption("--audio-format", "mp3");
-        request.addOption("--audio-quality", 0);
+        request.addOption("--audio-quality", "64K");
         downloading = true;
         Disposable disposable = Observable.fromCallable(() -> YoutubeDL.getInstance().execute(request, mCallback))
                 .subscribeOn(Schedulers.newThread())
