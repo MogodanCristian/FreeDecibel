@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.steelparrot.freedecibel.R;
+import com.steelparrot.freedecibel.network.YoutubeDLFactory;
+import com.yausername.youtubedl_android.DownloadProgressCallback;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +31,19 @@ public class MP4 extends Fragment {
     private String mParam1;
     private String mParam2;
     private Button mDownloadMP4;
+
+    private YoutubeDLFactory mYoutubeDLFactory = null;
+
+    private final DownloadProgressCallback mCallback = new DownloadProgressCallback() {
+        @Override
+        public void onProgressUpdate(float progress, long etaInSeconds) {
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getActivity(), String.valueOf(progress), Toast.LENGTH_SHORT).show();
+//                mProgressBar.setProgress((int) progress);
+//                tvDownloadStatus.setText(String.valueOf(progress) + "% (ETA " + String.valueOf(etaInSeconds) + " seconds)");
+            });
+        }
+    };
 
     public MP4() {
         // Required empty public constructor
@@ -71,7 +86,12 @@ public class MP4 extends Fragment {
         mDownloadMP4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Se descarca imediat, boss! Te pup!", Toast.LENGTH_SHORT).show();
+                mYoutubeDLFactory = YoutubeDLFactory.getInstance(YoutubeDLFactory.Format.MP4,"https://www.youtube.com/watch?v=L397TWLwrUU");
+                if(mYoutubeDLFactory.isDownloading()) {
+                    Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                mYoutubeDLFactory.startDownload(getActivity(),mCallback);
             }
         });
 

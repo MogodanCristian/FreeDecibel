@@ -1,48 +1,25 @@
 package com.steelparrot.freedecibel.fragments;
 
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.Manifest;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
-import android.os.Environment;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
-import com.steelparrot.freedecibel.BuildConfig;
+
 import com.steelparrot.freedecibel.R;
+import com.steelparrot.freedecibel.network.YoutubeDLFactory;
 import com.yausername.youtubedl_android.DownloadProgressCallback;
-import com.yausername.youtubedl_android.YoutubeDL;
-import com.yausername.youtubedl_android.YoutubeDLRequest;
 
-import java.io.File;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MP3#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MP3 extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -55,14 +32,10 @@ public class MP3 extends Fragment {
     private String mParam2;
     private AutoCompleteTextView mAutoCompleteTextView;
     private Button mDownloadMP3;
-    private Switch useConfigFile;
-    private ProgressBar mProgressBar;
-    private TextView tvDownloadStatus;
-    private TextView tvCommandOutput;
-    private ProgressBar mProgressBarLoading;
+    private YoutubeDLFactory mYoutubeDLFactory = null;
+    private YoutubeDLFactory.Format mFormat = YoutubeDLFactory.Format.MP3;
+    private YoutubeDLFactory.BitrateAudioQuality mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B128K;
 
-    private boolean downloading = false;
-    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     private final DownloadProgressCallback mCallback = new DownloadProgressCallback() {
         @Override
@@ -74,8 +47,6 @@ public class MP3 extends Fragment {
             });
         }
     };
-
-    private static final String TAG = "DownloadingExample";
 
     public MP3() { }
 
@@ -107,6 +78,11 @@ public class MP3 extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -116,92 +92,52 @@ public class MP3 extends Fragment {
 
         mAutoCompleteTextView = binding.findViewById(R.id.autoCompleteTextView);
         mAutoCompleteTextView.setAdapter(arrayAdapter);
-
+        mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i==0) {
+                    mFormat = YoutubeDLFactory.Format.M4A;
+                }
+                else {
+                    mFormat = YoutubeDLFactory.Format.MP3;
+                    MapDropdownPositionToBitrateQuality(i);
+                }
+            }
+        });
         mDownloadMP3 = binding.findViewById(R.id.button_mp3);
         mDownloadMP3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startDownload();
+                mYoutubeDLFactory = YoutubeDLFactory.getInstance(mFormat,"https://www.youtube.com/watch?v=L397TWLwrUU");
+                if(mYoutubeDLFactory.isDownloading()) {
+                    Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(mFormat == YoutubeDLFactory.Format.MP3) {
+                    mYoutubeDLFactory.setBitrateAudioQuality(mBitrateAudioQuality);
+                }
+                mYoutubeDLFactory.startDownload(getActivity(),mCallback);
             }
         });
 
         return binding.getRootView();
     }
 
-    private void startDownload() {
-
-        if(downloading) {
-            Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
-            return;
+    private void MapDropdownPositionToBitrateQuality(int pos) {
+        if(pos == 1) {
+            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B64K;
         }
-
-        if(!isStoragePermissionGranted()) {
-            Toast.makeText(getActivity(), "grant storage permission and retry", Toast.LENGTH_LONG).show();
-            return;
+        else if(pos == 2) {
+            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B128K;
         }
-
-//        String url = "https://vimeo.com/22439234";
-        String url = "https://www.youtube.com/watch?v=0qanF-91aJo";
-        if(TextUtils.isEmpty(url)) {
-            return;
+        else if(pos == 3) {
+            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B192K;
         }
-
-        YoutubeDLRequest request = new YoutubeDLRequest(url);
-        File youtubeDlDir = getDownloadLocation();
-        request.addOption("--no-mtime");
-        request.addOption("-o", youtubeDlDir.getAbsolutePath() + "/%(title)s.%(ext)s");
-//        request.addOption("-f", 140); // STILL THE BEST OPTION TO GO M4A
-        request.addOption("-f", "bestaudio");
-        request.addOption("--extract-audio");
-        request.addOption("--audio-format", "mp3");
-        request.addOption("--audio-quality", "320K");
-        downloading = true;
-        Disposable disposable = Observable.fromCallable(() -> YoutubeDL.getInstance().execute(request, mCallback))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(youtubeDLResponse -> {
-                    Toast.makeText(getActivity(), "download successful", Toast.LENGTH_LONG).show();
-                    downloading = false;
-                }, e -> {
-                   if(BuildConfig.DEBUG) {
-                       Log.e(TAG, "failed to download", e);
-                    }
-                   Toast.makeText(getActivity(),"download failed", Toast.LENGTH_LONG).show();
-                   downloading = false;
-                });
-
-        mCompositeDisposable.add(disposable);
-    }
-
-    @Override
-    public void onDestroy() {
-        mCompositeDisposable.dispose();
-        super.onDestroy();
-    }
-
-    @NonNull
-    private File getDownloadLocation() {
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    }
-
-    private void showStart() {
-        tvDownloadStatus.setText("Download started");
-        mProgressBar.setProgress(0);
-        mProgressBarLoading.setVisibility(View.VISIBLE);
-    }
-
-    public boolean isStoragePermissionGranted() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            }
-            else {
-                ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                return false;
-            }
+        else if(pos == 4) {
+            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B256K;
         }
-        else {
-            return true;
+        else if(pos == 5) {
+            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B320K;
         }
     }
 }
