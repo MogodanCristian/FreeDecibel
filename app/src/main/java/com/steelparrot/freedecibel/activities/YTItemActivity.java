@@ -66,8 +66,7 @@ public class YTItemActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         pager2 = findViewById(R.id.view_pager);
 
-        FragmentManager fm = getSupportFragmentManager();
-        adapter = new FragmentAdapter(fm, getLifecycle());
+        adapter = new FragmentAdapter(this, url);
         pager2.setAdapter(adapter);
 
         tabLayout.addTab(tabLayout.newTab().setText("MP3/M4A"));
