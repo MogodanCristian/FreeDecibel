@@ -154,7 +154,7 @@ public class MP3 extends Fragment {
         request.addOption("-f", "bestaudio");
         request.addOption("--extract-audio");
         request.addOption("--audio-format", "mp3");
-        request.addOption("--audio-quality", "64K");
+        request.addOption("--audio-quality", "320K");
         downloading = true;
         Disposable disposable = Observable.fromCallable(() -> YoutubeDL.getInstance().execute(request, mCallback))
                 .subscribeOn(Schedulers.newThread())
