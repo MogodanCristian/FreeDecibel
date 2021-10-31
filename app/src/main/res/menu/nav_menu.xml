@@ -7,4 +7,20 @@
         android:title="Search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/nav_library"
+        android:icon="@drawable/ic_baseline_menu_24"
+        android:title="Watch Later"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/nav_options"
+        android:icon="@drawable/ic_baseline_dark_mode_24"
+        android:title="Options"
+        app:showAsAction="always"
+        />
+
+
 </menu>

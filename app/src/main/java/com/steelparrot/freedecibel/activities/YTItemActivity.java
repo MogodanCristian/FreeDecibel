@@ -38,8 +38,6 @@ public class YTItemActivity extends AppCompatActivity {
     ViewPager2 pager2;
     FragmentAdapter adapter;
 
-    private static final String TAG = "YTItem_ytdl_init";
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -53,12 +51,6 @@ public class YTItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ytitem);
-        try {
-            YoutubeDL.getInstance().init(getApplication());
-            FFmpeg.getInstance().init(getApplication());
-        } catch (YoutubeDLException e) {
-            Log.e(TAG, "failed to initialize youtubedl-android", e);
-        }
 
         mImageView = findViewById(R.id.Image);
         mTitle = findViewById(R.id.Title);

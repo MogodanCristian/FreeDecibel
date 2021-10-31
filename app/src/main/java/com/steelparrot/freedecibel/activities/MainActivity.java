@@ -20,6 +20,9 @@ import com.steelparrot.freedecibel.databinding.ActivityMainBinding;
 import com.steelparrot.freedecibel.model.YTItem;
 import com.steelparrot.freedecibel.network.GetDataService;
 import com.steelparrot.freedecibel.network.RetrofitClientInstance;
+import com.yausername.ffmpeg.FFmpeg;
+import com.yausername.youtubedl_android.YoutubeDL;
+import com.yausername.youtubedl_android.YoutubeDLException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private CustomAdapter mAdapter;
     ProgressDialog mProgressDialog;
     ActivityMainBinding binding;
+
+    private static final String TAG = "YTItem_ytdl_init";
 
     private void searchYT(String query)
     {
@@ -76,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            YoutubeDL.getInstance().init(getApplication());
+            FFmpeg.getInstance().init(getApplication());
+        } catch (YoutubeDLException e) {
+            Log.e(TAG, "failed to initialize youtubedl-android", e);
+        }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setIsData(false);
     }

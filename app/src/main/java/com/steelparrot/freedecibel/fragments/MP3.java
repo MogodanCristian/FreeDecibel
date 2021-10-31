@@ -1,19 +1,42 @@
 package com.steelparrot.freedecibel.fragments;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.Manifest;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.steelparrot.freedecibel.BuildConfig;
 import com.steelparrot.freedecibel.R;
+import com.yausername.youtubedl_android.DownloadProgressCallback;
+import com.yausername.youtubedl_android.YoutubeDL;
+import com.yausername.youtubedl_android.YoutubeDLRequest;
+
+import java.io.File;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +55,27 @@ public class MP3 extends Fragment {
     private String mParam2;
     private AutoCompleteTextView mAutoCompleteTextView;
     private Button mDownloadMP3;
+    private Switch useConfigFile;
+    private ProgressBar mProgressBar;
+    private TextView tvDownloadStatus;
+    private TextView tvCommandOutput;
+    private ProgressBar mProgressBarLoading;
+
+    private boolean downloading = false;
+    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
+    private final DownloadProgressCallback mCallback = new DownloadProgressCallback() {
+        @Override
+        public void onProgressUpdate(float progress, long etaInSeconds) {
+            getActivity().runOnUiThread(() -> {
+                  Toast.makeText(getActivity(), String.valueOf(progress), Toast.LENGTH_SHORT).show();
+//                mProgressBar.setProgress((int) progress);
+//                tvDownloadStatus.setText(String.valueOf(progress) + "% (ETA " + String.valueOf(etaInSeconds) + " seconds)");
+            });
+        }
+    };
+
+    private static final String TAG = "DownloadingExample";
 
     public MP3() { }
 
@@ -77,10 +121,87 @@ public class MP3 extends Fragment {
         mDownloadMP3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Se descarca imediat, boss! Te pup!", Toast.LENGTH_SHORT).show();
+                startDownload();
             }
         });
 
         return binding.getRootView();
+    }
+
+    private void startDownload() {
+
+        if(downloading) {
+            Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(!isStoragePermissionGranted()) {
+            Toast.makeText(getActivity(), "grant storage permission and retry", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+//        String url = "https://vimeo.com/22439234";
+        String url = "https://www.youtube.com/watch?v=0qanF-91aJo";
+        if(TextUtils.isEmpty(url)) {
+            return;
+        }
+
+        YoutubeDLRequest request = new YoutubeDLRequest(url);
+        File youtubeDlDir = getDownloadLocation();
+        request.addOption("--no-mtime");
+        request.addOption("-o", youtubeDlDir.getAbsolutePath() + "/%(title)s.%(ext)s");
+//        request.addOption("-f", 140); // STILL THE BEST OPTION TO GO M4A
+        request.addOption("-f", "bestaudio");
+        request.addOption("--extract-audio");
+        request.addOption("--audio-format", "mp3");
+        request.addOption("--audio-quality", "320K");
+        downloading = true;
+        Disposable disposable = Observable.fromCallable(() -> YoutubeDL.getInstance().execute(request, mCallback))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(youtubeDLResponse -> {
+                    Toast.makeText(getActivity(), "download successful", Toast.LENGTH_LONG).show();
+                    downloading = false;
+                }, e -> {
+                   if(BuildConfig.DEBUG) {
+                       Log.e(TAG, "failed to download", e);
+                    }
+                   Toast.makeText(getActivity(),"download failed", Toast.LENGTH_LONG).show();
+                   downloading = false;
+                });
+
+        mCompositeDisposable.add(disposable);
+    }
+
+    @Override
+    public void onDestroy() {
+        mCompositeDisposable.dispose();
+        super.onDestroy();
+    }
+
+    @NonNull
+    private File getDownloadLocation() {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+    }
+
+    private void showStart() {
+        tvDownloadStatus.setText("Download started");
+        mProgressBar.setProgress(0);
+        mProgressBarLoading.setVisibility(View.VISIBLE);
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+            else {
+                ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
     }
 }
