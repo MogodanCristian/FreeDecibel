@@ -130,19 +130,6 @@ public class MP3 extends Fragment {
 
     private void startDownload() {
 
-//        try {
-//
-//            File youtubeDLDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "youtubedl-android");
-//            YoutubeDLRequest request = new YoutubeDLRequest("https://vimeo.com/22439234");
-//            request.addOption("-o", youtubeDLDir.getAbsolutePath() + "/%(title)s.%(ext)s");
-//            YoutubeDL.getInstance().execute(request, (progress, etaInSeconds) -> {
-//                System.out.println(String.valueOf(progress) + "% (ETA " + String.valueOf(etaInSeconds) + " seconds)");
-//            });
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         if(downloading) {
             Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
             return;
@@ -154,21 +141,20 @@ public class MP3 extends Fragment {
         }
 
 //        String url = "https://vimeo.com/22439234";
-        String url = "https://www.youtube.com/watch?v=4ewrSgDf50I";
+        String url = "https://www.youtube.com/watch?v=0qanF-91aJo";
         if(TextUtils.isEmpty(url)) {
             return;
         }
 
         YoutubeDLRequest request = new YoutubeDLRequest(url);
         File youtubeDlDir = getDownloadLocation();
-        File config = new File(youtubeDlDir, "config.txt");
-
-        if(config.exists()) {
-            request.addOption("--config-location", config.getAbsolutePath());
-        }
-        else {
-            request.addOption("-o", youtubeDlDir.getAbsolutePath() + "/%(title)s.%(ext)s");
-        }
+        request.addOption("--no-mtime");
+        request.addOption("-o", youtubeDlDir.getAbsolutePath() + "/%(title)s.%(ext)s");
+//        request.addOption("-f", 140); // STILL THE BEST OPTION TO GO
+        request.addOption("-f", "bestaudio");
+        request.addOption("--extract-audio");
+        request.addOption("--audio-format", "mp3");
+        request.addOption("--audio-quality", 0);
         downloading = true;
         Disposable disposable = Observable.fromCallable(() -> YoutubeDL.getInstance().execute(request, mCallback))
                 .subscribeOn(Schedulers.newThread())
@@ -195,12 +181,7 @@ public class MP3 extends Fragment {
 
     @NonNull
     private File getDownloadLocation() {
-        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File youtubeDLDir = new File(downloadsDir, "FreeDecibel");
-        if(!youtubeDLDir.exists()) {
-            youtubeDLDir.mkdir();
-        }
-        return youtubeDLDir;
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
 
     private void showStart() {
