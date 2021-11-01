@@ -1,8 +1,10 @@
 package com.steelparrot.freedecibel.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,22 +13,24 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-
-import android.widget.Toast;
 
 
 import com.steelparrot.freedecibel.R;
-import com.steelparrot.freedecibel.network.YoutubeDLFactory;
-import com.yausername.youtubedl_android.DownloadProgressCallback;
+import com.steelparrot.freedecibel.activities.YTItemActivity;
 
-public class MP3 extends Fragment {
+public class MP3 extends Fragment{
+
+    public interface OnMP3DataPass {
+        public void onFormatPass(YTItemActivity.Format format);
+        public void onBitrateQualityPass(YTItemActivity.BitrateAudioQuality bitrateAudioQuality);
+    }
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     // TODO: Rename and change types of parameters
     private AutoCompleteTextView mAutoCompleteTextView;
+    OnMP3DataPass mOnDataPass;
 
     public MP3() { }
 
@@ -42,6 +46,12 @@ public class MP3 extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mOnDataPass = (OnMP3DataPass) context;
     }
 
     @Override
@@ -65,34 +75,36 @@ public class MP3 extends Fragment {
         mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                if(i==0) {
-//                    mFormat = YoutubeDLFactory.Format.M4A;
-//                }
-//                else {
-//                    mFormat = YoutubeDLFactory.Format.MP3;
-//                    MapDropdownPositionToBitrateQuality(i);
-//                }
+                if(i==0) {
+                    mOnDataPass.onFormatPass(YTItemActivity.Format.M4A);
+                    mOnDataPass.onBitrateQualityPass(YTItemActivity.BitrateAudioQuality.B128K);
+                }
+                else {
+                    mOnDataPass.onFormatPass(YTItemActivity.Format.MP3);
+                    mOnDataPass.onBitrateQualityPass(MapDropdownPositionToBitrateQuality(i));
+                }
             }
         });
 
         return binding.getRootView();
     }
 
-    private void MapDropdownPositionToBitrateQuality(int pos) {
-//        if(pos == 1) {
-//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B64K;
-//        }
-//        else if(pos == 2) {
-//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B128K;
-//        }
-//        else if(pos == 3) {
-//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B192K;
-//        }
-//        else if(pos == 4) {
-//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B256K;
-//        }
-//        else if(pos == 5) {
-//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B320K;
-//        }
+    private YTItemActivity.BitrateAudioQuality MapDropdownPositionToBitrateQuality(int pos) {
+        if(pos == 1) {
+            return YTItemActivity.BitrateAudioQuality.B64K;
+        }
+        else if(pos == 2) {
+            return YTItemActivity.BitrateAudioQuality.B128K;
+        }
+        else if(pos == 3) {
+            return YTItemActivity.BitrateAudioQuality.B192K;
+        }
+        else if(pos == 4) {
+            return YTItemActivity.BitrateAudioQuality.B256K;
+        }
+        else if(pos == 5) {
+            return YTItemActivity.BitrateAudioQuality.B320K;
+        }
+        return null;
     }
 }
