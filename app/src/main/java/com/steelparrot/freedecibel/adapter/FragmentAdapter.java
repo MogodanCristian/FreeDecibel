@@ -12,20 +12,17 @@ import com.steelparrot.freedecibel.fragments.MP4;
 
 public class FragmentAdapter extends FragmentStateAdapter {
 
-    private String url;
-
-    public FragmentAdapter(@NonNull FragmentActivity fragmentActivity, String url) {
-        super(fragmentActivity);
-        this.url = url;
+    public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+        super(fragmentManager, lifecycle);
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
         if (position == 1) {
-            return MP4.newInstance(url);
+            return new MP4();
         } else {
-            return MP3.newInstance(url);
+            return new MP3();
         }
     }
 

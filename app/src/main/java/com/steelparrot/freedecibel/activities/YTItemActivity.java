@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +23,9 @@ import com.squareup.picasso.Picasso;
 import com.steelparrot.freedecibel.R;
 import com.steelparrot.freedecibel.adapter.CustomAdapter;
 import com.steelparrot.freedecibel.adapter.FragmentAdapter;
+import com.steelparrot.freedecibel.network.YoutubeDLFactory;
 import com.yausername.ffmpeg.FFmpeg;
+import com.yausername.youtubedl_android.DownloadProgressCallback;
 import com.yausername.youtubedl_android.YoutubeDL;
 import com.yausername.youtubedl_android.YoutubeDLException;
 
@@ -37,6 +40,25 @@ public class YTItemActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager2 pager2;
     FragmentAdapter adapter;
+
+    private Button mButtonDownload;
+    private ProgressBar progressBar;
+    private TextView tvDownloadStatus;
+    private TextView tvCommandOutput;
+    private ProgressBar pbLoading;
+    private final DownloadProgressCallback mCallback = new DownloadProgressCallback() {
+        @Override
+        public void onProgressUpdate(float progress, long etaInSeconds) {
+              runOnUiThread(() -> {
+                Toast.makeText(getApplicationContext(), String.valueOf(progress), Toast.LENGTH_SHORT).show();
+//                mProgressBar.setProgress((int) progress);
+//                tvDownloadStatus.setText(String.valueOf(progress) + "% (ETA " + String.valueOf(etaInSeconds) + " seconds)");
+            });
+        }
+    };
+    private YoutubeDLFactory mYoutubeDLFactory = null;
+    private YoutubeDLFactory.Format mFormat = YoutubeDLFactory.Format.MP3;
+    private YoutubeDLFactory.BitrateAudioQuality mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B128K;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -66,11 +88,12 @@ public class YTItemActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         pager2 = findViewById(R.id.view_pager);
 
-        adapter = new FragmentAdapter(this, url);
+        adapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
         pager2.setAdapter(adapter);
 
-        tabLayout.addTab(tabLayout.newTab().setText("MP3/M4A"));
-        tabLayout.addTab(tabLayout.newTab().setText("MP4"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_baseline_music_note_24).setText("MP3/M4A"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_baseline_music_video_24).setText("MP4"));
+
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -89,6 +112,22 @@ public class YTItemActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
+            }
+        });
+
+        mButtonDownload = findViewById(R.id.button_download);
+        mButtonDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mYoutubeDLFactory = YoutubeDLFactory.getInstance(mFormat,url);
+                if(mYoutubeDLFactory.isDownloading()) {
+                    Toast.makeText(getApplicationContext(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(mFormat == YoutubeDLFactory.Format.MP3) {
+                    mYoutubeDLFactory.setBitrateAudioQuality(mBitrateAudioQuality);
+                }
+                mYoutubeDLFactory.startDownload(YTItemActivity.this,mCallback);
             }
         });
 

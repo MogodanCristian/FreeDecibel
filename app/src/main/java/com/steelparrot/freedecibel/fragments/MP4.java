@@ -24,24 +24,7 @@ public class MP4 extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_URL = "url";
-
     // TODO: Rename and change types of parameters
-    private String mUrl;
-    private Button mDownloadMP4;
-
-    private YoutubeDLFactory mYoutubeDLFactory = null;
-
-    private final DownloadProgressCallback mCallback = new DownloadProgressCallback() {
-        @Override
-        public void onProgressUpdate(float progress, long etaInSeconds) {
-            getActivity().runOnUiThread(() -> {
-                Toast.makeText(getActivity(), String.valueOf(progress), Toast.LENGTH_SHORT).show();
-//                mProgressBar.setProgress((int) progress);
-//                tvDownloadStatus.setText(String.valueOf(progress) + "% (ETA " + String.valueOf(etaInSeconds) + " seconds)");
-            });
-        }
-    };
 
     public MP4() {
         // Required empty public constructor
@@ -57,7 +40,6 @@ public class MP4 extends Fragment {
     public static MP4 newInstance(String url) {
         MP4 fragment = new MP4();
         Bundle args = new Bundle();
-        args.putString(ARG_URL, url);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,29 +48,14 @@ public class MP4 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUrl = getArguments().getString(ARG_URL);
+            // receive args
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View binding = inflater.inflate(R.layout.fragment_mp4, container, false);
-
-        mDownloadMP4 = binding.findViewById(R.id.button_mp4);
-        mDownloadMP4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mYoutubeDLFactory = YoutubeDLFactory.getInstance(YoutubeDLFactory.Format.MP4,mUrl);
-                if(mYoutubeDLFactory.isDownloading()) {
-                    Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                mYoutubeDLFactory.startDownload(getActivity(),mCallback);
-            }
-        });
-
         return binding.getRootView();
     }
 }

@@ -24,27 +24,9 @@ public class MP3 extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_URL = "url";
 
     // TODO: Rename and change types of parameters
-    private String mUrl;
     private AutoCompleteTextView mAutoCompleteTextView;
-    private Button mDownloadMP3;
-    private YoutubeDLFactory mYoutubeDLFactory = null;
-    private YoutubeDLFactory.Format mFormat = YoutubeDLFactory.Format.MP3;
-    private YoutubeDLFactory.BitrateAudioQuality mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B128K;
-
-
-    private final DownloadProgressCallback mCallback = new DownloadProgressCallback() {
-        @Override
-        public void onProgressUpdate(float progress, long etaInSeconds) {
-            getActivity().runOnUiThread(() -> {
-                  Toast.makeText(getActivity(), String.valueOf(progress), Toast.LENGTH_SHORT).show();
-//                mProgressBar.setProgress((int) progress);
-//                tvDownloadStatus.setText(String.valueOf(progress) + "% (ETA " + String.valueOf(etaInSeconds) + " seconds)");
-            });
-        }
-    };
 
     public MP3() { }
 
@@ -58,7 +40,6 @@ public class MP3 extends Fragment {
     public static MP3 newInstance(String url) {
         MP3 fragment = new MP3();
         Bundle args = new Bundle();
-        args.putString(ARG_URL, url);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,7 +48,7 @@ public class MP3 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUrl = getArguments().getString(ARG_URL);
+            // implement on need
         }
     }
 
@@ -84,28 +65,13 @@ public class MP3 extends Fragment {
         mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i==0) {
-                    mFormat = YoutubeDLFactory.Format.M4A;
-                }
-                else {
-                    mFormat = YoutubeDLFactory.Format.MP3;
-                    MapDropdownPositionToBitrateQuality(i);
-                }
-            }
-        });
-        mDownloadMP3 = binding.findViewById(R.id.button_mp3);
-        mDownloadMP3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mYoutubeDLFactory = YoutubeDLFactory.getInstance(mFormat,mUrl);
-                if(mYoutubeDLFactory.isDownloading()) {
-                    Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if(mFormat == YoutubeDLFactory.Format.MP3) {
-                    mYoutubeDLFactory.setBitrateAudioQuality(mBitrateAudioQuality);
-                }
-                mYoutubeDLFactory.startDownload(getActivity(),mCallback);
+//                if(i==0) {
+//                    mFormat = YoutubeDLFactory.Format.M4A;
+//                }
+//                else {
+//                    mFormat = YoutubeDLFactory.Format.MP3;
+//                    MapDropdownPositionToBitrateQuality(i);
+//                }
             }
         });
 
@@ -113,20 +79,20 @@ public class MP3 extends Fragment {
     }
 
     private void MapDropdownPositionToBitrateQuality(int pos) {
-        if(pos == 1) {
-            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B64K;
-        }
-        else if(pos == 2) {
-            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B128K;
-        }
-        else if(pos == 3) {
-            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B192K;
-        }
-        else if(pos == 4) {
-            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B256K;
-        }
-        else if(pos == 5) {
-            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B320K;
-        }
+//        if(pos == 1) {
+//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B64K;
+//        }
+//        else if(pos == 2) {
+//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B128K;
+//        }
+//        else if(pos == 3) {
+//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B192K;
+//        }
+//        else if(pos == 4) {
+//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B256K;
+//        }
+//        else if(pos == 5) {
+//            mBitrateAudioQuality = YoutubeDLFactory.BitrateAudioQuality.B320K;
+//        }
     }
 }
