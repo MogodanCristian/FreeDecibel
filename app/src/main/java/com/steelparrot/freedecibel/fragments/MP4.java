@@ -1,19 +1,20 @@
 package com.steelparrot.freedecibel.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.AutoCompleteTextView;
 
 import com.steelparrot.freedecibel.R;
-import com.steelparrot.freedecibel.network.YoutubeDLFactory;
-import com.yausername.youtubedl_android.DownloadProgressCallback;
+import com.steelparrot.freedecibel.activities.YTItemActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,26 +23,17 @@ import com.yausername.youtubedl_android.DownloadProgressCallback;
  */
 public class MP4 extends Fragment {
 
+    public interface OnMP4DataPass {
+        public void onVideoQualityPass(YTItemActivity.VideoQuality videoQuality);
+    }
+
+    OnMP4DataPass mOnMP4DataPass;
+
+    private AutoCompleteTextView mAutoCompleteTextView;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_URL = "url";
-
     // TODO: Rename and change types of parameters
-    private String mUrl;
-    private Button mDownloadMP4;
-
-    private YoutubeDLFactory mYoutubeDLFactory = null;
-
-    private final DownloadProgressCallback mCallback = new DownloadProgressCallback() {
-        @Override
-        public void onProgressUpdate(float progress, long etaInSeconds) {
-            getActivity().runOnUiThread(() -> {
-                Toast.makeText(getActivity(), String.valueOf(progress), Toast.LENGTH_SHORT).show();
-//                mProgressBar.setProgress((int) progress);
-//                tvDownloadStatus.setText(String.valueOf(progress) + "% (ETA " + String.valueOf(etaInSeconds) + " seconds)");
-            });
-        }
-    };
 
     public MP4() {
         // Required empty public constructor
@@ -57,38 +49,47 @@ public class MP4 extends Fragment {
     public static MP4 newInstance(String url) {
         MP4 fragment = new MP4();
         Bundle args = new Bundle();
-        args.putString(ARG_URL, url);
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mOnMP4DataPass = (OnMP4DataPass) context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUrl = getArguments().getString(ARG_URL);
+            // receive args
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View binding = inflater.inflate(R.layout.fragment_mp4, container, false);
+        String[] resolutions = getResources().getStringArray(R.array.Resolutions);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(requireContext(), R.layout.dropdown_item, resolutions);
 
-        mDownloadMP4 = binding.findViewById(R.id.button_mp4);
-        mDownloadMP4.setOnClickListener(new View.OnClickListener() {
+        mAutoCompleteTextView = binding.findViewById(R.id.autoCompleteTextViewMP4);
+        mAutoCompleteTextView.setAdapter(arrayAdapter);
+        mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                mYoutubeDLFactory = YoutubeDLFactory.getInstance(YoutubeDLFactory.Format.MP4,mUrl);
-                if(mYoutubeDLFactory.isDownloading()) {
-                    Toast.makeText(getActivity(),"cannot start downloading. a download is already in progress", Toast.LENGTH_LONG).show();
-                    return;
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i==0) {
+                    mOnMP4DataPass.onVideoQualityPass(YTItemActivity.VideoQuality.V640x360);
                 }
-                mYoutubeDLFactory.startDownload(getActivity(),mCallback);
+                else {
+                    mOnMP4DataPass.onVideoQualityPass(YTItemActivity.VideoQuality.V1280x720);
+                }
             }
         });
 
         return binding.getRootView();
     }
+
 }

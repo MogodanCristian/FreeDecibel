@@ -10,4 +10,14 @@
         <item>MP3 256kbps</item>
         <item>MP3 320kbps</item>
     </string-array>
+
+    <string-array name="Resolutions" >
+        <item>640x360</item>
+        <item>1280x720 - Best</item>
+    </string-array>
+
+    <string name="download_start">Starting Download...</string>
+    <string name="start">Press \'Download\' to get started!</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="download_failed">Download Failed</string>
 </resources>
