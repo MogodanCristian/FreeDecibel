@@ -39,7 +39,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
     private Context mContext;
     ArrayList<Integer> mPositions;
     private static boolean startDelete=false;
-    private static Integer clickCounter=0;
+    /*private static Integer clickCounter=0;*/
 
     public DownloadLaterAdapter(Context context, ArrayList<YTItem> itemsList) {
         this.mContext = context;
