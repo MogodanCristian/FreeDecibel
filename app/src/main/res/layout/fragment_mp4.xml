@@ -5,14 +5,24 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MP4">
 
-    <!-- TODO: Update blank fragment layout -->
-    <Button
-        android:id="@+id/button_mp4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Download"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextViewMP4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="640x360"
+            android:dropDownHeight="100dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:inputType="none" />
+        <!--        android:hint="Rate"-->
+        <!--        app:startIconDrawable="@drawable/ic_rate"/>-->
+
+    </com.google.android.material.textfield.TextInputLayout>
 </FrameLayout>

@@ -1,17 +1,20 @@
 package com.steelparrot.freedecibel.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.AutoCompleteTextView;
 
 import com.steelparrot.freedecibel.R;
+import com.steelparrot.freedecibel.activities.YTItemActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,15 +23,17 @@ import com.steelparrot.freedecibel.R;
  */
 public class MP4 extends Fragment {
 
+    public interface OnMP4DataPass {
+        public void onVideoQualityPass(YTItemActivity.VideoQuality videoQuality);
+    }
+
+    OnMP4DataPass mOnMP4DataPass;
+
+    private AutoCompleteTextView mAutoCompleteTextView;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private Button mDownloadMP4;
 
     public MP4() {
         // Required empty public constructor
@@ -38,43 +43,53 @@ public class MP4 extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment MP4.
      */
     // TODO: Rename and change types and number of parameters
-    public static MP4 newInstance(String param1, String param2) {
+    public static MP4 newInstance(String url) {
         MP4 fragment = new MP4();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mOnMP4DataPass = (OnMP4DataPass) context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // receive args
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View binding = inflater.inflate(R.layout.fragment_mp4, container, false);
+        String[] resolutions = getResources().getStringArray(R.array.Resolutions);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(requireContext(), R.layout.dropdown_item, resolutions);
 
-        mDownloadMP4 = binding.findViewById(R.id.button_mp4);
-        mDownloadMP4.setOnClickListener(new View.OnClickListener() {
+        mAutoCompleteTextView = binding.findViewById(R.id.autoCompleteTextViewMP4);
+        mAutoCompleteTextView.setAdapter(arrayAdapter);
+        mAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "Se descarca imediat, boss! Te pup!", Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i==0) {
+                    mOnMP4DataPass.onVideoQualityPass(YTItemActivity.VideoQuality.V640x360);
+                }
+                else {
+                    mOnMP4DataPass.onVideoQualityPass(YTItemActivity.VideoQuality.V1280x720);
+                }
             }
         });
 
         return binding.getRootView();
     }
+
 }

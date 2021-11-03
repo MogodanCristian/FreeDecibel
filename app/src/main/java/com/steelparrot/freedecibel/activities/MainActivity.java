@@ -1,10 +1,15 @@
 package com.steelparrot.freedecibel.activities;
 
+import static java.security.AccessController.getContext;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -95,17 +100,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(binding.getIsData()) {
+        if (binding.getIsData()) {
             binding.setIsData(true);
         }
     }
 
+    static int dark_light = 0;
+    static int themeIconResId = R.drawable.ic_baseline_dark_mode_24;
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.nav_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.nav_search);
         MenuItem download_later = menu.findItem(R.id.nav_download_later);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        getMenuInflater().inflate(R.menu.nav_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem searchItem = menu.findItem(R.id.nav_search);
+        MenuItem darkTheme = menu.findItem(R.id.nav_dark);
+        darkTheme.setIcon(themeIconResId);
+        SearchView searchView= (SearchView) searchItem.getActionView();
         searchView.setQueryHint("Write keywords here...");
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +139,18 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 Intent intent=new Intent(getApplicationContext(), DownloadLaterActivity.class);
                 startActivity(intent);
+        darkTheme.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (dark_light % 2 == 0) {
+                    dark_light++;
+                    themeIconResId = R.drawable.ic_baseline_light_mode_24;
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                } else {
+                    dark_light++;
+                    themeIconResId = R.drawable.ic_baseline_dark_mode_24;
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
                 return true;
             }
         });
@@ -136,18 +168,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        return super.onCreateOptionsMenu(menu);
-    }
-    private void setItemsVisibility(Menu menu, MenuItem exception,boolean visibility)
-    {
-        for(int i=0; i<menu.size();i++)
-        {
-            MenuItem item=menu.getItem(i);
-            if(item!=exception)
-            {
-                item.setVisible(visibility);
-            }
-        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
   
     // method to generate list of data using RecyclerView with custom adapter
