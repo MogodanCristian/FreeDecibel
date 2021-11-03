@@ -7,17 +7,21 @@
 
     <application
         android:allowBackup="true"
+        android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FreeDecibel"
-        android:extractNativeLibs="true"
-        android:requestLegacyExternalStorage="true">
+        android:theme="@style/Theme.FreeDecibel">
+        <activity android:name=".activities.DownloadLaterActivity"
+            android:label="Download Later"
+            android:parentActivityName=".activities.MainActivity">
+        </activity>
         <activity
             android:name=".activities.YTItemActivity"
-            android:parentActivityName=".activities.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

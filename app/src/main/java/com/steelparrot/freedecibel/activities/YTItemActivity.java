@@ -2,8 +2,10 @@ package com.steelparrot.freedecibel.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -13,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -38,6 +41,7 @@ import com.yausername.youtubedl_android.DownloadProgressCallback;
 import com.yausername.youtubedl_android.YoutubeDL;
 import com.yausername.youtubedl_android.YoutubeDLException;
 import com.yausername.youtubedl_android.YoutubeDLRequest;
+
 
 import java.io.File;
 
@@ -99,6 +103,8 @@ public class YTItemActivity extends AppCompatActivity implements MP3.OnMP3DataPa
     TabLayout tabLayout;
     ViewPager2 pager2;
     FragmentAdapter adapter;
+    Button downloadLater;
+
 
     private Button mButtonDownload;
     private ProgressBar progressBar;
@@ -153,6 +159,23 @@ public class YTItemActivity extends AppCompatActivity implements MP3.OnMP3DataPa
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_baseline_music_video_24).setText("MP4"));
 
 
+        //move to the download later activity
+        downloadLater=findViewById(R.id.downloadLater);
+        downloadLater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(getApplicationContext(), DownloadLaterActivity.class);
+                intent.putExtra("url", url);
+                intent.putExtra("title", title);
+                intent.putExtra("thumbnail", thumbnail);
+                intent.putExtra("duration", duration);
+                intent.putExtra("views", views);
+                intent.putExtra("uploader", uploader);
+                intent.putExtra("time_upload", time_upload);
+                startActivity(intent);
+            }
+        });
+        //end of moving to download later activity
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

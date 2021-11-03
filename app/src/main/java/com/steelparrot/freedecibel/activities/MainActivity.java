@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -110,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.nav_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.nav_search);
+        MenuItem download_later = menu.findItem(R.id.nav_download_later);
+        SearchView searchView = (SearchView) searchItem.getActionView();
         getMenuInflater().inflate(R.menu.nav_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -128,6 +134,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        download_later.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent=new Intent(getApplicationContext(), DownloadLaterActivity.class);
+                startActivity(intent);
         darkTheme.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
