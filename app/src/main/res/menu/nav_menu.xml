@@ -9,9 +9,9 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/nav_library"
+        android:id="@+id/nav_download_later"
         android:icon="@drawable/ic_baseline_menu_24"
-        android:title="Watch Later"
+        android:title="Download Later"
         app:showAsAction="always"
         />
 
@@ -21,6 +21,4 @@
         android:title="Options"
         app:showAsAction="always"
         />
-
-
 </menu>

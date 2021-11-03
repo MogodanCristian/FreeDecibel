@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/deleteAll"
+        android:title="Delete All" />
+    <item
+        android:id="@+id/deleteOne"
+        android:title="DeleteOne"
+        android:icon="@drawable/ic_baseline_delete_24"
+        app:showAsAction="always"
+        android:visible="false"
+        />
+</menu>
