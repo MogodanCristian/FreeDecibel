@@ -128,8 +128,8 @@ public class DownloadLaterActivity extends AppCompatActivity implements Download
         for(int i=0;i<positions.size();i++)
         {
             int pos = positions.get(i);
-            mDatabaseHelper.deleteItem(mItems.get(pos));
-            mItems.remove(pos);
+            mDatabaseHelper.deleteItem(mItems.get(pos-i));
+            mItems.remove(pos-i);
         }
         mAdapter.setItemsList(mItems);
         mAdapter.notifyDataSetChanged();

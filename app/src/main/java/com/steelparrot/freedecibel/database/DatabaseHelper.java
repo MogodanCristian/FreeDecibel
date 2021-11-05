@@ -109,7 +109,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public void deleteItem(YTItem item)
         {
             SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(TABLE_NAME,COLUMN_URL + " = ?",new String[]{item.getM_url()});
+//            db.delete(TABLE_NAME,COLUMN_URL + " = ?",new String[]{item.getM_url()});
+            db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + COLUMN_URL + "= '" + item.getM_url() + "'");
             db.close();
         }
 }

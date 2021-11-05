@@ -116,10 +116,17 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                     if(holder.mainLayout.isSelected()) {
                         holder.mainLayout.setSelected(false);
                         holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
+                        mPositions.remove(position);
+                        if(mPositions.isEmpty())
+                        {
+                            DownloadLaterActivity.deleteOne.setVisible(false);
+                            startDelete=false;
+                        }
                     }
                     else{
                         holder.mainLayout.setSelected(true);
                         holder.mainLayout.setBackgroundColor(Color.GREEN);
+                        mPositions.add(position);
                     }
 //                    if(clickCounter%2==0 && clickCounter>0)
 //                    {   holder.mainLayout.setBackgroundColor(Color.GREEN);
