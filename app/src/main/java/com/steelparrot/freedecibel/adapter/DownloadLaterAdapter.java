@@ -96,6 +96,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
         holder.txtViews.setText(updateViews(currItem.getM_views().floatValue()));
         holder.txtTimeUpload.setText(currItem.getM_time_upload());
         holder.txtDuration.setText(currItem.getM_duration());
+        holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.BLUE : Color.TRANSPARENT);
         holder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,28 +112,22 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                       mContext.startActivity(intent);
 
                 }
-                else
-                {
-                    if(holder.mainLayout.isSelected()) {
-                        holder.mainLayout.setSelected(false);
-                        holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
-                        mPositions.remove(position);
-                    }
-                    else{
-                        holder.mainLayout.setSelected(true);
-                        holder.mainLayout.setBackgroundColor(Color.GREEN);
+                else {
+                    currItem.setSelected(!currItem.isSelected());
+                    holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.BLUE : Color.TRANSPARENT);
+                    if (currItem.isSelected()) {
                         mPositions.add(position);
+                    } else {
+                        int index = mPositions.indexOf(position);
+                        mPositions.remove(index);
                     }
-                    if(mPositions.isEmpty())
-                    {
+                    if (mPositions.isEmpty()) {
                         DownloadLaterActivity.deleteOne.setVisible(false);
-                        DownloadLaterActivity.isOnLongClick=false;
-                        startDelete=false;
+                        DownloadLaterActivity.isOnLongClick = false;
+                        startDelete = false;
                         DownloadLaterActivity.selectionCounter.setVisible(false);
-                    }
-                    else
-                    {
-                        DownloadLaterActivity.selectionCounter.setTitle(mPositions.size()+" items selected");
+                    } else {
+                        DownloadLaterActivity.selectionCounter.setTitle(mPositions.size() + " items selected");
                     }
                 }
             }
@@ -140,15 +135,15 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
         holder.mainLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(startDelete==false) {
+                if(!startDelete) {
                     startDelete=true;
                     mPositions.add(position);
                     MenuItem item= DownloadLaterActivity.deleteOne;
                     DownloadLaterActivity.isOnLongClick=true;
                     DownloadLaterActivity.selectionCounter.setTitle("1 item selected");
                     DownloadLaterActivity.selectionCounter.setVisible(true);
-                    holder.mainLayout.setBackgroundColor(Color.GREEN);
-                    holder.mainLayout.setSelected(true);
+                    holder.mainLayout.setBackgroundColor(Color.BLUE);
+                    currItem.setSelected(true);
                     item.setVisible(true);
                     item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
@@ -156,11 +151,9 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                             mOnMenuItemDataPass.onMenuItemsDeleted(mPositions);
                             DownloadLaterActivity.selectionCounter.setVisible(false);
                             DownloadLaterActivity.deleteOne.setVisible(false);
-                            holder.mainLayout.setSelected(false);
-                            holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
                             DownloadLaterActivity.isOnLongClick=false;
                             startDelete=false;
-                            //dupa delete trebuie resetat totul
+                            mPositions.clear();
                             return true;
                         }
                     });

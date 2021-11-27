@@ -92,7 +92,7 @@ public class DownloadLaterActivity extends AppCompatActivity implements Download
         Cursor cursor=mDatabaseHelper.selectAllData();
         if(cursor.getCount() == 0)
         {
-            Toast.makeText(this,"No data my boi",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"No items saved in library!",Toast.LENGTH_SHORT).show();
         }
         else
         {
