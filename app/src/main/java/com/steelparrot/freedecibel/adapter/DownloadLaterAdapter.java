@@ -117,33 +117,23 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                         holder.mainLayout.setSelected(false);
                         holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
                         mPositions.remove(position);
-                        if(mPositions.isEmpty())
-                        {
-                            DownloadLaterActivity.deleteOne.setVisible(false);
-                            startDelete=false;
-                        }
                     }
                     else{
                         holder.mainLayout.setSelected(true);
                         holder.mainLayout.setBackgroundColor(Color.GREEN);
                         mPositions.add(position);
                     }
-//                    if(clickCounter%2==0 && clickCounter>0)
-//                    {   holder.mainLayout.setBackgroundColor(Color.GREEN);
-//                        if(!mPositions.contains(position)) {
-//                        mPositions.add(position);}
-//                    }
-//                    else{
-//                        holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
-//                        if(mPositions.size() == 1) {
-//                            DownloadLaterActivity.deleteOne.setVisible(false);
-//                            startDelete=false;
-//                        }
-//                        if(mPositions.contains(position)) {
-//                            mPositions.remove(position);
-//                        }
-//                    }
-
+                    if(mPositions.isEmpty())
+                    {
+                        DownloadLaterActivity.deleteOne.setVisible(false);
+                        DownloadLaterActivity.isOnLongClick=false;
+                        startDelete=false;
+                        DownloadLaterActivity.selectionCounter.setVisible(false);
+                    }
+                    else
+                    {
+                        DownloadLaterActivity.selectionCounter.setTitle(mPositions.size()+" items selected");
+                    }
                 }
             }
         });
@@ -154,6 +144,9 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                     startDelete=true;
                     mPositions.add(position);
                     MenuItem item= DownloadLaterActivity.deleteOne;
+                    DownloadLaterActivity.isOnLongClick=true;
+                    DownloadLaterActivity.selectionCounter.setTitle("1 item selected");
+                    DownloadLaterActivity.selectionCounter.setVisible(true);
                     holder.mainLayout.setBackgroundColor(Color.GREEN);
                     holder.mainLayout.setSelected(true);
                     item.setVisible(true);
@@ -161,6 +154,13 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             mOnMenuItemDataPass.onMenuItemsDeleted(mPositions);
+                            DownloadLaterActivity.selectionCounter.setVisible(false);
+                            DownloadLaterActivity.deleteOne.setVisible(false);
+                            holder.mainLayout.setSelected(false);
+                            holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
+                            DownloadLaterActivity.isOnLongClick=false;
+                            startDelete=false;
+                            //dupa delete trebuie resetat totul
                             return true;
                         }
                     });
@@ -168,6 +168,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                 return true;
             }
         });
+
 
     }
 
