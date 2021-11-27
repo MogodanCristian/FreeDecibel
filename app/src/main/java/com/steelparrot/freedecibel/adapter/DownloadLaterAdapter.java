@@ -96,6 +96,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
         holder.txtViews.setText(updateViews(currItem.getM_views().floatValue()));
         holder.txtTimeUpload.setText(currItem.getM_time_upload());
         holder.txtDuration.setText(currItem.getM_duration());
+        holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.GRAY : Color.TRANSPARENT);
         holder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,49 +112,48 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                       mContext.startActivity(intent);
 
                 }
-                else
-                {
-                    if(holder.mainLayout.isSelected()) {
-                        holder.mainLayout.setSelected(false);
-                        holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
+                else {
+                    currItem.setSelected(!currItem.isSelected());
+                    holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.GRAY : Color.TRANSPARENT);
+                    if (currItem.isSelected()) {
+                        mPositions.add(position);
+                    } else {
+                        int index = mPositions.indexOf(position);
+                        mPositions.remove(index);
                     }
-                    else{
-                        holder.mainLayout.setSelected(true);
-                        holder.mainLayout.setBackgroundColor(Color.GREEN);
+                    if (mPositions.isEmpty()) {
+                        DownloadLaterActivity.deleteOne.setVisible(false);
+                        DownloadLaterActivity.isOnLongClick = false;
+                        startDelete = false;
+                        DownloadLaterActivity.selectionCounter.setVisible(false);
+                    } else {
+                        DownloadLaterActivity.selectionCounter.setTitle(mPositions.size() + " items selected");
                     }
-//                    if(clickCounter%2==0 && clickCounter>0)
-//                    {   holder.mainLayout.setBackgroundColor(Color.GREEN);
-//                        if(!mPositions.contains(position)) {
-//                        mPositions.add(position);}
-//                    }
-//                    else{
-//                        holder.mainLayout.setBackgroundColor(Color.TRANSPARENT);
-//                        if(mPositions.size() == 1) {
-//                            DownloadLaterActivity.deleteOne.setVisible(false);
-//                            startDelete=false;
-//                        }
-//                        if(mPositions.contains(position)) {
-//                            mPositions.remove(position);
-//                        }
-//                    }
-
                 }
             }
         });
         holder.mainLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(startDelete==false) {
+                if(!startDelete) {
                     startDelete=true;
                     mPositions.add(position);
                     MenuItem item= DownloadLaterActivity.deleteOne;
-                    holder.mainLayout.setBackgroundColor(Color.GREEN);
-                    holder.mainLayout.setSelected(true);
+                    DownloadLaterActivity.isOnLongClick=true;
+                    DownloadLaterActivity.selectionCounter.setTitle("1 item selected");
+                    DownloadLaterActivity.selectionCounter.setVisible(true);
+                    holder.mainLayout.setBackgroundColor(Color.GRAY);
+                    currItem.setSelected(true);
                     item.setVisible(true);
                     item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             mOnMenuItemDataPass.onMenuItemsDeleted(mPositions);
+                            DownloadLaterActivity.selectionCounter.setVisible(false);
+                            DownloadLaterActivity.deleteOne.setVisible(false);
+                            DownloadLaterActivity.isOnLongClick=false;
+                            startDelete=false;
+                            mPositions.clear();
                             return true;
                         }
                     });
@@ -161,6 +161,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                 return true;
             }
         });
+
 
     }
 

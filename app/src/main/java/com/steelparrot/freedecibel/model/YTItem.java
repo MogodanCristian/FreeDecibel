@@ -25,6 +25,16 @@ public class YTItem {
     @SerializedName("time_upload")
     private String m_time_upload;
 
+    private boolean isSelected=false;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
     public YTItem(String m_url, String m_thumbnail, String m_title, String m_duration, Long m_views, String m_uploader, String m_time_upload) {
         this.m_thumbnail = m_thumbnail;
         this.m_title = m_title;

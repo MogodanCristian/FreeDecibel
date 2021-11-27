@@ -6,10 +6,17 @@
         android:id="@+id/deleteAll"
         android:title="Delete All" />
     <item
+        android:id="@+id/selectionCounter"
+        android:title="SelectionCounter"
+        app:showAsAction="always"
+        android:visible="false"
+        android:enabled="false" />
+    <item
         android:id="@+id/deleteOne"
         android:title="DeleteOne"
         android:icon="@drawable/ic_baseline_delete_24"
         app:showAsAction="always"
         android:visible="false"
         />
+
 </menu>

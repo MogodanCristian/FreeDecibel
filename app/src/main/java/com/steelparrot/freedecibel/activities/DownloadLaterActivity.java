@@ -1,16 +1,19 @@
 package com.steelparrot.freedecibel.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.ArraySet;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.steelparrot.freedecibel.R;
@@ -27,6 +30,9 @@ public class DownloadLaterActivity extends AppCompatActivity implements Download
     ArrayList<YTItem> mItems;
     DownloadLaterAdapter mAdapter;
     public static MenuItem deleteOne;
+    private MenuItem mItem;
+    public static boolean isOnLongClick = false;
+    public static MenuItem selectionCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,32 +49,50 @@ public class DownloadLaterActivity extends AppCompatActivity implements Download
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.download_later_menu,menu);
         MenuItem deleteAll=menu.findItem(R.id.deleteAll);
         deleteOne=menu.findItem(R.id.deleteOne);
+        selectionCounter=menu.findItem(R.id.selectionCounter);
+
         deleteAll.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mDatabaseHelper.deleteAll();
-               /* Intent intent=new Intent(getApplicationContext(), DownloadLaterActivity.class);
-                startActivity(intent);*/
-                mItems.clear();
-                mAdapter.setItemsList(mItems);
-                mAdapter.notifyDataSetChanged();
+                AlertDialog.Builder beSure=new AlertDialog.Builder(DownloadLaterActivity.this);
+                beSure.setTitle("Warning");
+                beSure.setMessage("Are you sure you want to delete everything?");
+                beSure.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDatabaseHelper.deleteAll();
+                        mItems.clear();
+                        mAdapter.setItemsList(mItems);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+                beSure.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                beSure.show();
                 return true;
             }
         });
         return super.onCreateOptionsMenu(menu);
     }
 
+
+
     void storeData()
     {
         Cursor cursor=mDatabaseHelper.selectAllData();
         if(cursor.getCount() == 0)
         {
-            Toast.makeText(this,"No data my boi",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"No items saved in library!",Toast.LENGTH_SHORT).show();
         }
         else
         {
@@ -118,7 +142,14 @@ public class DownloadLaterActivity extends AppCompatActivity implements Download
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.finish();
+                if(!isOnLongClick) {
+                    item.setEnabled(true);
+                    this.finish();
+                }
+                else {
+                    item.setEnabled(false);
+                    Toast.makeText(this,"Finish selecting first!",Toast.LENGTH_SHORT).show();
+                }
         }
         return true;
     }
@@ -128,8 +159,8 @@ public class DownloadLaterActivity extends AppCompatActivity implements Download
         for(int i=0;i<positions.size();i++)
         {
             int pos = positions.get(i);
-            mDatabaseHelper.deleteItem(mItems.get(pos));
-            mItems.remove(pos);
+            mDatabaseHelper.deleteItem(mItems.get(pos-i));
+            mItems.remove(pos-i);
         }
         mAdapter.setItemsList(mItems);
         mAdapter.notifyDataSetChanged();
