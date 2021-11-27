@@ -10,7 +10,7 @@
         android:title="SelectionCounter"
         app:showAsAction="always"
         android:visible="false"
-        android:enabled="false"/>
+        android:enabled="false" />
     <item
         android:id="@+id/deleteOne"
         android:title="DeleteOne"

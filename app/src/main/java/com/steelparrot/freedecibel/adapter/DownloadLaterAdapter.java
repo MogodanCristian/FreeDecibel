@@ -96,7 +96,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
         holder.txtViews.setText(updateViews(currItem.getM_views().floatValue()));
         holder.txtTimeUpload.setText(currItem.getM_time_upload());
         holder.txtDuration.setText(currItem.getM_duration());
-        holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.BLUE : Color.TRANSPARENT);
+        holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.GRAY : Color.TRANSPARENT);
         holder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +114,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                 }
                 else {
                     currItem.setSelected(!currItem.isSelected());
-                    holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.BLUE : Color.TRANSPARENT);
+                    holder.mainLayout.setBackgroundColor(currItem.isSelected() ? Color.GRAY : Color.TRANSPARENT);
                     if (currItem.isSelected()) {
                         mPositions.add(position);
                     } else {
@@ -142,7 +142,7 @@ public class DownloadLaterAdapter extends RecyclerView.Adapter<DownloadLaterAdap
                     DownloadLaterActivity.isOnLongClick=true;
                     DownloadLaterActivity.selectionCounter.setTitle("1 item selected");
                     DownloadLaterActivity.selectionCounter.setVisible(true);
-                    holder.mainLayout.setBackgroundColor(Color.BLUE);
+                    holder.mainLayout.setBackgroundColor(Color.GRAY);
                     currItem.setSelected(true);
                     item.setVisible(true);
                     item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
